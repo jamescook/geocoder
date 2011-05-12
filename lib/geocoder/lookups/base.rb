@@ -67,7 +67,7 @@ module Geocoder
           r.proxy = proxy_url
           r
         else
-          HTTPI::Request.new
+          HTTPI
         end
       end
 
@@ -144,7 +144,7 @@ module Geocoder
         timeout(Geocoder::Configuration.timeout) do
           url = query_url(query, reverse)
           unless cache and response = cache[url]
-            response = http_client.get(URI.parse(url))
+            response = http_client.get(URI.parse(url).to_s).body
             if cache
               cache[url] = response
             end

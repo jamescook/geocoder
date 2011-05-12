@@ -29,7 +29,7 @@ class GeocoderTest < Test::Unit::TestCase
 
   def test_doesnt_use_proxy_when_not_specified
     lookup = Geocoder::Lookup::Google.new
-    assert !lookup.send(:http_client).proxy
+    assert lookup.send(:http_client) == HTTPI
   end
 
   def test_exception_raised_on_bad_proxy_url
