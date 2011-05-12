@@ -1,4 +1,4 @@
-require 'net/http'
+require 'httpi'
 require 'uri'
 
 unless defined?(ActiveSupport::JSON)
@@ -63,9 +63,11 @@ module Geocoder
             raise ConfigurationError,
               "Error parsing #{protocol.upcase} proxy URL: '#{proxy_url}'"
           end
-          Net::HTTP::Proxy(uri.host, uri.port, uri.user, uri.password)
+          r=HTTPI::Request.new
+          r.proxy = proxy_url
+          r
         else
-          Net::HTTP
+          HTTPI::Request.new
         end
       end
 
@@ -142,7 +144,7 @@ module Geocoder
         timeout(Geocoder::Configuration.timeout) do
           url = query_url(query, reverse)
           unless cache and response = cache[url]
-            response = http_client.get_response(URI.parse(url)).body
+            response = http_client.get(URI.parse(url))
             if cache
               cache[url] = response
             end

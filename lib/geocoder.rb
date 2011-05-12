@@ -1,3 +1,4 @@
+require "bundler/setup"
 require "geocoder/configuration"
 require "geocoder/calculations"
 require "geocoder/cache"

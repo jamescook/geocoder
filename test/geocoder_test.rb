@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'test_helper'
+require 'net/http'
 
 class GeocoderTest < Test::Unit::TestCase
 
@@ -23,12 +24,12 @@ class GeocoderTest < Test::Unit::TestCase
   def test_uses_proxy_when_specified
     Geocoder::Configuration.http_proxy = 'localhost'
     lookup = Geocoder::Lookup::Google.new
-    assert lookup.send(:http_client).proxy_class?
+    assert lookup.send(:http_client).proxy
   end
 
   def test_doesnt_use_proxy_when_not_specified
     lookup = Geocoder::Lookup::Google.new
-    assert !lookup.send(:http_client).proxy_class?
+    assert !lookup.send(:http_client).proxy
   end
 
   def test_exception_raised_on_bad_proxy_url
@@ -358,15 +359,15 @@ class GeocoderTest < Test::Unit::TestCase
 
 
   def test_always_raise_timeout_error
-    Geocoder::Configuration.always_raise = [TimeoutError]
-    assert_raise(TimeoutError) { Geocoder.search("timeout") }
+    Geocoder::Configuration.always_raise = [Net::HTTP::TimeoutError]
+    assert_raise(Net::HTTP::TimeoutError) { Geocoder.search("timeout") }
     Geocoder::Configuration.always_raise = []
   end
 
 
   def test_always_raise_socket_error
-    Geocoder::Configuration.always_raise = [SocketError]
-    assert_raise(SocketError) { Geocoder.search("socket_error") }
+    Geocoder::Configuration.always_raise = [Net::HTTP::SocketError]
+    assert_raise(Net::HTTP::SocketError) { Geocoder.search("socket_error") }
     Geocoder::Configuration.always_raise = []
   end
 
